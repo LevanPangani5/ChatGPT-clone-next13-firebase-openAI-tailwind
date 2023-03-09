@@ -5,7 +5,8 @@ import {useSession} from 'next-auth/react'
 import { addDoc, collection, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
 import {toast} from 'react-hot-toast'
-
+import ModalSelection from "./ModalSelection"
+import useSWR from'swr'
 type Props={
     chatId:string
 }
@@ -15,7 +16,9 @@ function ChatInput({chatId}:Props) {
   const {data:session}= useSession()
  
   //useswr to get model
-  const model='davinci'
+  const {data:model} = useSWR('model',{
+    fallbackData:'text-davinci-003'
+})
 
   const sendMessage=async (e:FormEvent<HTMLFormElement>)=>{
       e.preventDefault()
@@ -77,8 +80,9 @@ function ChatInput({chatId}:Props) {
           <PaperAirplaneIcon className="w-4 h-4 -rotate-45"/>
         </button>
       </form>
-      <div>
+      <div className="md:hidden">
         {/*modal selection*/}
+        <ModalSelection/>
       </div>
     </div>
   )
